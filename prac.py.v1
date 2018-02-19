@@ -1,0 +1,134 @@
+import googlemaps
+
+gmaps = googlemaps.Client(key = 'AIzaSyB8Sjq1wYpnC2mKqyheCNeeTIpZKNVKovI')
+
+class Node(object): #needed for new style class
+    #class will only hold a value which will be title and children nodes
+    def __init__(self, value):
+        self.value = value
+        self.children = []
+        self.distances = [] # will be parallel to children list
+        
+    def find(self, value):
+        i = 0
+        while (i != len(self.children) and self.children[i].value != value):
+            i += 1
+        return i
+      
+    #don't clutter the tree unnecessarily since there is no delete method    
+    def addChild(self, child):
+        if (self.find(child.value) == len(self.children)): # not found
+            self.children.append(child)
+class Edge(object):
+    def __init__(self, p1, p2, dist):
+        self.p1= p1
+        self.p2= p2
+        
+    def isDuplicate(self, other):
+        if (other.p1 == self.p1 or other.p2 = self.p1) and (other.p2 == self.p1 or other.p2 = self.p2):
+            return True
+        return False
+    
+class Tree(object): #will be structured like a graph
+    def __init__(self):
+        self.nodes = []
+        self.edges = []
+        self.root = None
+        
+    def isDuplicate(self, value):
+        i = 0
+        while (i < len(self.nodes) and self.nodes[i].value != value):
+            i += 1
+        if (i == len(self.nodes)):
+            return False
+        else:
+            return True
+    
+    def insert(self, value):
+        #create a new root(Starting location) if needed
+        if (self.root == None):
+            self.root = Node(value)
+            self.nodes.append(self.root)
+            return
+        
+        # if not root then each node in graph needs a link to newly added node
+        # new node also needs a link to each existing node
+        # new node then needs to be added to the existing nodes list
+        # don't clutter graph with duplicates
+        if (not self.isDuplicate(value)):
+            temp = Node(value)
+            for i in range(0, len(self.nodes)):
+                self.nodes[i].addChild(temp)
+                temp.addChild(self.nodes[i])
+            self.nodes.append(temp)
+    
+    def updateDistances(self):
+        for i in range(0, len(self.nodes)):
+            for j in range(0, len(self.nodes)):
+                if (i == j):
+                    continue
+                dist_dict = gmaps.distance_matrix(self.nodes[i].value, self.nodes[j].value)
+                self.nodes[i].distances.insert(self.nodes[i].find(self.nodes[j].value), dist_dict["rows"][0]["elements"][0]["distance"]["value"])
+    
+    # returns the shortest distance of the travelling salesman problem
+    # uses Djikstra for MST and adds root at the end for shortest distance
+    def TSPDistShortest(self):
+        pass
+
+        
+#    #returns best_path tree
+#    def TSPDjikstra(self):
+#        pass
+#    
+#    def cycleDetect(self):
+#        
+#    
+#    def addEdges(self):
+#        self.edges = []
+#        for i in range(0, len(self.nodes)):
+#            for j in range(0, len(self.nodes)):
+#                if (i == j):
+#                    continue
+#                curr = Edge(self.nodes[i].value, self.nodes[j].value) 
+#                if (not self.checkEdges(curr)):
+#                    self.edges.append(curr)
+#    
+#    # will return whether edge already exists
+#    def checkEdges(self, edge):
+#        if (not self.edges):
+#            for i in range(len(edges)):
+#                if (edges[i].isDuplicate(edge)):
+#                    return True
+#        return False
+    
+    def find(self, value):
+        i = 0
+        while (i != len(self.nodes) and self.nodes[i].value != value):
+            i += 1
+        if (i == len(self.nodes)):
+            return None
+        return self.nodes[i]
+    
+    def printChildren(self, value):
+        print(value + '\n')
+        temp = self.find(value)
+        for i in range (0, len(temp.children)):
+            print(temp.children[i].value)
+            if (not temp.distances)
+                print(temp.distances[i])
+                
+    #            
+    def checkCycle
+        
+        
+tree = Tree()
+tree.insert("University of Pretoria, Pretoria")
+tree.insert("CSIR, Meiring Naude Road, Pretoria")
+tree.insert("Armscor, Delmas Road, Pretoria")
+tree.insert("Denel Dynamics, Nellmapius Drive, Centurion")
+tree.insert("Air Force Base Waterkloof, Centurion")
+tree.updateDistances()
+tree.printChildren("Air Force Base Waterkloof, Centurion")
+#dist_dict = gmaps.distance_matrix("University of Pretoria, Pretoria" , "Denel Dynamics, Nellmapius Drive, Centurion")
+#print(tree.nodes[0].find("Air Force Base Waterkloof, Centurion"))
+#print(dist_dict["rows"][0]["elements"][0]["distance"]["value"])

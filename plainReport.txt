@@ -1,0 +1,48 @@
+INTRODUCTION
+
+The first practical of EAI320 introduces the Travelling Salesman Problem and poses the challenge of solving it in the context of a set of given locations.
+
+The goal is to find the shortest path from the starting location through all locations once and back to the starting point. The point of finding this path can truly be appreciated when one imagines that the problem is being solved for an actual salesman that would like to make a round trip through the given locations back to where he started. He would most probably like to reduce the 'cost' of the trip by choosing the shortest route with 'cost' being the keyword. 
+
+This involves of the use of the GoogleMaps API to get the distances between each pair of locations.
+
+PROBLEM STATEMENT
+The practical aims to solve Travelling salesman problem(TSP). 
+Five locations are given:
+// put following in bullets
+1. University of Pretoria, Pretoria (Starting location)
+2. CSIR, Meiring Naude Road, Pretoria
+3. Armscor, Delmas Road, Pretoria
+4. Denel Dynamics, Nellmapius Drive, Centurion
+5. Air Force Base Waterkloof, Centurion
+
+The problem is divided into two tasks. The first task consists of creating the actual tree and the second task uses two different methods(Depth First search and Breadth First search) to find and compare the two solutions.
+
+METHODOLOGY
+Task 1 requires the creation of a tree that essentially creates a hierarchical structure such that all permutations of the path that can be travelled are contained inside. For example, taking the given location, we would have the starting location(1) as the root. This root would have 4 children(2 - 5). Then each of these four children would have 3 children each (3, 4, 5), (2, 4, 5), (2, 3, 5) and (2, 3, 4). This pattern is repeated till the lowest level is reached where there is only one child. This is the recursive tree method.
+The use of such a memory-intensive tree like this seems illogical when a graph structure provides more efficiency and was, therefore, used. The graph used for this structure can be seen fig 1. However the tree implementation is also provided in the code.
+
+The first step is the Node class. Let "Current" be the name of an instance of the Node class. It contains 3 fields: value(name of the location), and 2 arrays: children and distances. The children array stores references to the children nodes of Current. The distances array is a parallel array to the children array storing the distance from Current to each child node in the corresponding index. The Node also provides functionality to add a child to the children array and to find the index of a node in its children when given a value string to match.
+
+The reason for the graph is very simple and can be explained in terms of memory use. The graph structure keeps an array of all the nodes in the graph and interconnects them through an array of references mentioned as the children array earlier. On the other hand, the recursive tree needs the creation of a new node each time to add a child. This creates several duplicates in the tree and, therefore, wastes memory. Although the effects on memory will not be significant unless the tree is to be made for a number of nodes of a higher order.
+
+The Tree contains creates the completely interconnected graph internally. This is configured by an 'insert' function and an array internal to the class called 'nodes'. 'nodes' contains all the nodes in the graph. The insert function creates a new node('Current') each time a new value is to be added. It then adds 'Current' as a child to all existing nodes and adds all the existing nodes as a child to 'Current'. Then 'Current' is added to the internal 'nodes' array
+Distances are set through the updateDistances() method which basically uses the googleMaps API to calculate the distance between each pair of locations and stores them in the distances of array of the node.
+
+Task 2 required the use of a Depth First Search and Bread First Search to solve the TSP, counting the number of nodes visited along the way so as to see the difference in performance and efficiency in the corresponding solutions.
+
+The Depth First search uses a recursive function to travel the several permutations of the path. The process starts at the root node and enters it's children and then the children's children and so on till a complete path is traversed(leaf node is reached) whose accumulated distance can be checked against the shortest recorded distance. This determines a new shortest distance if applicable, else a new path is tried. This process is spread across the entire graph. 
+
+The Breadth First Search uses a the recursive tree implementation as using the graph didn't work in the given time. It has a queue beginning from the root. The queue dequeues elements in First-in-First-Out order so the breadth of the graph is travelled on each level of the tree. So the first path is contains the root and all it's children. The second path contains the root, it's first child and all the first child's children. The third path path contains the root, it's second child and all the second child's children. This process works until the entire tree is traversed in this Breadth First manner. 
+
+RESULTS AND DISCUSSION
+Table with 
+
+
+Both the methods are appropriately implemented with an optimization such that they stop traversing a path if the accumulated distance already exceeds the shortest recorded distance. Another thing to note is that since the Breadth First search basically travels the same path almost 4 times, it's count will always be more than the Depth First search.
+
+BIBLIOGRAHY:
+pentagon picture : https://sites.math.washington.edu/~king/coursedir/m444a02/class/11-18-penta-answers.html
+
+Suggestion for the BFS Solution:
+Adapted from answer by amit at https://stackoverflow.com/questions/29141501/how-to-implement-bfs-algorithm-for-pacman   
